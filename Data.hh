@@ -8,14 +8,23 @@ struct Status {
     uint32_t thirst = MAX_FOOD_AND_THIRST_LEVEL;
 };
 
-/*type of items:
+/*
+  type of items:
     0 - EMPTY SLOT
     1 - building
     2 - food
     3 - drink
+
+  itemName list:
+    1 - Wood
+    2 - Iron
+    3 - Rope
+    4 - Rum
+    5 - Crab
 */
 struct Item {
     uint32_t type;
+    int itemName;
     uint32_t value;
 }
 
@@ -23,15 +32,7 @@ struct ShipType {
     uint32_t iron;
     uint32_t wood;
     uint32_t rope;
-} shipRequirements[2];
-
-shipRequirements[0].iron = 8;
-shipRequirements[0].wood = 12;
-shipRequirements[0].rope = 6;
-
-shipRequirements[1].iron = 16;
-shipRequirements[1].wood = 24;
-shipRequirements[1].rope = 12;
+};
 
 class Player {
     private:
@@ -54,10 +55,11 @@ class Ship{
         uint32_t wood = 5;
         uint32_t rope = 0;
     public:
+        Ship();
         void UpgradeShip();
         bool CheckElems();
         void CheckInv();
         char* typeToClass(int shipType);
-        void StoreItems();
+        void StoreItem(int typeOfItem, int nameOfItem, int valueOfItem);
         void Sail();
 };

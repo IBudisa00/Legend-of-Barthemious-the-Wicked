@@ -1,8 +1,29 @@
 #include <iostream>
 #include <string.h>
 #include <Data.hh>
+#include <locations.hh>
+#include <locations.cpp>
 
-//----------- Start Ship functions ----------------
+Ship ship;
+Player player;
+ShipType shipRequirements[2];
+shipRequirements[0].iron = 8;
+shipRequirements[0].wood = 12;
+shipRequirements[0].rope = 6;
+
+shipRequirements[1].iron = 16;
+shipRequirements[1].wood = 24;
+shipRequirements[1].rope = 12;
+
+//----------- Start Ship functions ----------------//
+Ship::Ship(){
+    //setting starting values for raft
+    type = 1;
+    iron = 2;
+    wood = 5;
+    rope = 0;
+}
+
 void Ship::UpgradeShip(){
     if(CheckElems() == 0)
     {
@@ -12,7 +33,7 @@ void Ship::UpgradeShip(){
     else
     {
         type++;
-        std::cout << "Ship upgraded to class " << typeToClass() <<"\n";
+        std::cout << "Ship upgraded to " << typeToClass(type) <<"\n";
     }
 }
 
@@ -37,13 +58,42 @@ char* Ship::typeToClass(int shipType){
         return "Frigate";
 }
 
-void Ship::StoreItems(){
-
+void Ship::StoreItem(int typeOfItem, int nameOfItem, int valueOfItem){
+    if(typeOfItem == 0)
+    {
+        std::cout<<"Nothing to store at ship.\n";
+        return;
+    }
+    else if(typeOfItem == 1)
+    {
+        if(nameOfItem == 1)
+        {
+            wood+=valueOfItem;
+        }
+        else if(nameOfItem == 2)
+        {
+            iron+=valueOfItem;
+        }
+        else
+        {
+            rope+=valueOfItem;
+        }
+        return;
+    }
+    else if((typeOfItem == 2)||(typeOfItem == 3))
+    {
+        std::cout<<"Cannot store this item at ship.\n";
+        return;
+    }
 }
 
-//----------- End Ship functions ----------------
+void Ship::Sail(){
+    std::cout<<"Sailing to next land...\n";
+}
 
-//----------- Start Player functions ---------------
+//----------- End Ship functions ----------------//
+
+//----------- Start Player functions ---------------//
 void Player::SetName(char* desiredName){
     strcpy(desiredName, name);
 }
@@ -123,6 +173,7 @@ void Player::Pickup(){
         inventory[position].type = //nesto sa mape sto je proslijednjeo u fju
         inventory[position].value = //nesto sa mape sto je proslijednjeo u fju
         //obrisat elem sa mape
+        deleteElem();
     }
 }
-//----------- End Player functions ---------------
+//----------- End Player functions ---------------//

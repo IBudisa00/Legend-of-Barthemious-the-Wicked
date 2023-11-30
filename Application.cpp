@@ -12,7 +12,7 @@ void PlayGame();
 void StartGame();
 
 int main(){
-    //Initialize data
+    //Initialize data --> done
     PlayGame();
     //Release data
 
