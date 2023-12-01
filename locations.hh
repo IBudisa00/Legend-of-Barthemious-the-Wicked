@@ -1,3 +1,6 @@
+#define MAP1_X_CORD 9
+#define MAP1_Y_CORD 9
+
 /*elem types:
     0 - empty/no elem
     1 - wood
@@ -7,15 +10,20 @@
     5 - drink
 */
 
-class area{
+class location{
     private:
-        bool shipAccesableArea;
-        int elem;
-        int value;
+        bool shipAccessibleArea;
+        uint32_t x;
+        uint32_t y;
+        uint32_t elem;
+        uint32_t value;
     public:
-        area();
-        void setLocation(int element, int inputValue);
-        void setShipAccesableArea();
+        location();
+        void setLocation(uint32_t element, uint32_t inputValue);
+        void setShipAccessibleArea();
         void deleteElem();
         bool checkExistence();
+        void setCoordinates(uint32_t x_cord, uint32_t y_cord);
 };
+
+void areaCoordinatesSetting();

@@ -2,6 +2,8 @@
 #include <cstring>
 #include <Data.hh>
 #include <Data.cpp>
+#include <locations.hh>
+#include <locations.cpp>
 
 #define MAX_COMMANDS_SIZE 16
 
@@ -12,7 +14,7 @@ void PlayGame();
 void StartGame();
 
 int main(){
-    //Initialize data --> done
+    areaCoordinatesSetting();
     PlayGame();
     //Release data
 
@@ -81,8 +83,14 @@ void StartGame()
     bool gameOngoing = true;
     bool gameEnds = false;
     char command[MAX_COMMANDS_SIZE];
+    char desiredName[MAX_NAME];
+    location *position = &map1[0][4];
+    Player *playerPointer = &player;
 
     StoryLine();
+    std::cout <<"Enter your name: ";
+    std::cin >> desiredName;
+    playerPointer->SetName(desiredName);
     while(gameOngoing)
     {
         std::cin >> command;
@@ -92,7 +100,56 @@ void StartGame()
                 listOfCommands();
                 break;
             case "/pickup":
-                //check map if anything can be picked up
+                if(position->checkExistence())
+                {
+                    playerPointer->Pickup(position);
+                }
+                break;
+            case "/eat":
+                //
+                break;
+            case "/drink":
+                //same as eat
+                break;
+            case "/up":
+                if(position->x == 0)
+                {
+                    std::cout << "Cannot go there...\n";
+                }
+                else
+                {
+                    position = &map1[position->x - 1][position->y];
+                }
+                break;
+            case "/down":
+                if(position->x == 8)
+                {
+                    std::cout << "Cannot go there...\n";
+                }
+                else
+                {
+                    position = &map1[position->x + 1][position->y];
+                }
+                break;
+            case "/left":
+                if(position->y == 0)
+                {
+                    std::cout << "Cannot go there...\n";
+                }
+                else
+                {
+                    position = &map1[position->x][position->y - 1];
+                }
+                break;
+            case "/right":
+                if(position->y == 8)
+                {
+                    std::cout << "Cannot go there...\n";
+                }
+                else
+                {
+                    position = &map1[position->x][position->y + 1];
+                }
                 break;
             case "/exit":
                 std::cout << "Exiting game...\n";

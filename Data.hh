@@ -44,7 +44,7 @@ class Player {
         void SetName(char* desiredName);
         void Eat(int slot);
         void Drink(int slot);
-        void Pickup();
+        void Pickup(location *pos);
 };
 
 class Ship{

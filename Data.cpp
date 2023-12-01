@@ -152,7 +152,7 @@ void Player::Drink(int slot){
 
 }
 
-void Player::Pickup(){
+void Player::Pickup(location *pos){
     int position;
 
     if(inventory[INV_SIZE-1].value != 0)
@@ -170,10 +170,9 @@ void Player::Pickup(){
                 break;
             }
         }
-        inventory[position].type = //nesto sa mape sto je proslijednjeo u fju
-        inventory[position].value = //nesto sa mape sto je proslijednjeo u fju
-        //obrisat elem sa mape
-        deleteElem();
+        inventory[position].type = pos->elem;
+        inventory[position].value = pos->value;
+        pos->deleteElem();
     }
 }
 //----------- End Player functions ---------------//

@@ -1,7 +1,8 @@
+#include <iostream>
 #include <locations.hh>
 
 location::location(){
-    shipAccesableArea = false;
+    shipAccessibleArea = false;
     elem = 0;
     value = 0;
 }
@@ -11,7 +12,7 @@ void location::setLocation(int element, int inputValue){
     value = inputValue;
 }
 
-void location::setShipAccesableArea(){
+void location::setShipAccessibleArea(){
     shipAccesableArea = true;
 }
 
@@ -24,12 +25,31 @@ bool location::checkExistence(){
     if(elem != 0)
         return true;
     else
+    {
+        std::cout << "Nothing to be picked up.\n";
         return false;
+    }
+}
+
+void location::setCoordinates(uint32_t x_cord, uint32_t y_cord){
+    x = x_cord;
+    y = y_cord;
+}
+
+//fix passing map which is 2d 
+void areaCoordinatesSetting(location *mapPointer){
+    for(int i = 0; i < MAP1_X_CORD; i++)
+    {
+        for(int j = 0; j < MAP1_Y_CORD; j++)
+        {
+            mapPointer->setCoordinates(i,j);
+        }
+    }
 }
 
 //---- Area 1 setting ------//
-area map1[9][9];
-map1[0][3].setShipAccesableArea();
+location map1[MAP1_X_CORD][MAP1_Y_CORD];
+map1[0][4].setShipAccesableArea();
 map1[1][1].setLocation(1,4);
 map1[1][6].setLocation(3,3);
 map1[3][3].setLocation(5,1);
