@@ -13,6 +13,7 @@
 class location{
     private:
         bool shipAccessibleArea;
+        bool playerIsHere;
         uint32_t x;
         uint32_t y;
         uint32_t elem;
@@ -24,6 +25,11 @@ class location{
         void deleteElem();
         bool checkExistence();
         void setCoordinates(uint32_t x_cord, uint32_t y_cord);
+        uint32_t getx();
+        uint32_t gety();
+        void setPlayerIsHere(bool value);
+        bool checkPlayerPosition();
+        uint32_t itemAtLocation();
 };
 
 void areaCoordinatesSetting();
