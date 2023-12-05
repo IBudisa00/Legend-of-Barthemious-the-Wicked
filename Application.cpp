@@ -1,10 +1,8 @@
 #include <iostream>
 #include <cstring>
 #include <conio.h>
-#include <Data.hh>
-#include <Data.cpp>
-#include <locations.hh>
-#include <locations.cpp>
+#include "locations.hh"
+#include "Data.hh"
 
 #define MAX_COMMANDS_SIZE 16
 
@@ -17,7 +15,6 @@ uint32_t commandToInt(char *command);
 void printMap(location gameMap[MAP1_X_CORD][MAP1_Y_CORD]);
 
 int main(){
-    areaCoordinatesSetting();
     PlayGame();
     //Release data
 
@@ -40,7 +37,7 @@ void StoryLine(){
 void StartCommands(){
     std::cout << "/commands - List of commands\n \
                   /start - Start game\n \
-                  /exit - Exit game\n"
+                  /exit - Exit game\n";
 };
 
 void listOfCommands(){
@@ -50,7 +47,7 @@ void listOfCommands(){
                   /upgrade - Upgrade ship\n \
                   /shipinv - Check ship's inventory (building materials)\n \
                   /commands - List of commands\n \
-                  /exit - Exit game\n"
+                  /exit - Exit game\n";
 };
 
 void PlayGame(){
@@ -87,9 +84,15 @@ void StartGame()
     bool gameEnds = false;
     char command[MAX_COMMANDS_SIZE];
     char desiredName[MAX_NAME];
+    location map1[MAP1_X_CORD][MAP1_Y_CORD];
     location *position = &map1[0][4];
+    Player player;
     Player *playerPointer = &player;
+    Ship ship;
+    ShipType shipRequirements[2] = {ShipType(8, 12, 6), ShipType(16, 24, 12)};
 
+    areaCoordinatesSetting(map1);
+    setStartingMap(map1);
     StoryLine();
     std::cout <<"Enter your name: ";
     std::cin >> desiredName;
@@ -123,7 +126,7 @@ void StartGame()
                 else
                 {
                     position->setPlayerIsHere(false);
-                    position = &map1[position->x - 1][position->y];
+                    position = &map1[position->getx() - 1][position->gety()];
                     position->setPlayerIsHere(true);
                     printMap(map1);
                 }
@@ -136,7 +139,7 @@ void StartGame()
                 else
                 {
                     position->setPlayerIsHere(false);
-                    position = &map1[position->x + 1][position->y];
+                    position = &map1[position->getx() + 1][position->gety()];
                     position->setPlayerIsHere(true);
                     printMap(map1);
                 }
@@ -149,7 +152,7 @@ void StartGame()
                 else
                 {
                     position->setPlayerIsHere(false);
-                    position = &map1[position->x][position->y - 1];
+                    position = &map1[position->getx()][position->gety() - 1];
                     position->setPlayerIsHere(true);
                     printMap(map1);
                 }
@@ -162,7 +165,7 @@ void StartGame()
                 else
                 {
                     position->setPlayerIsHere(false);
-                    position = &map1[position->x][position->y + 1];
+                    position = &map1[position->getx()][position->gety() + 1];
                     position->setPlayerIsHere(true);
                     printMap(map1);
                 }
@@ -206,24 +209,24 @@ uint32_t commandToInt(char *command){
 }
 
 void printMap(location gameMap[MAP1_X_CORD][MAP1_Y_CORD]){
-    clrscr();
+    //clrscr();
     for(int i = 0; i < MAP1_X_CORD; i++)
     {
-        for(int y = 0; y < MAP1_Y_CORD; y++)
+        for(int j = 0; j < MAP1_Y_CORD; j++)
         {
             if(gameMap[i][j].checkPlayerPosition())
                 std::cout << "| P |";
             else
             {
-                if(itemAtLocation == 1)
+                if(gameMap[i][j].itemAtLocation() == 1)
                     std::cout << "| W |";
-                else if(itemAtLocation == 2)
+                else if(gameMap[i][j].itemAtLocation() == 2)
                     std::cout << "| I |";
-                else if(itemAtLocation == 3)
+                else if(gameMap[i][j].itemAtLocation() == 3)
                     std::cout << "| R |";
-                else if(itemAtLocation == 4)
+                else if(gameMap[i][j].itemAtLocation() == 4)
                     std::cout << "| F |";
-                else if(itemAtLocation == 5)
+                else if(gameMap[i][j].itemAtLocation() == 5)
                     std::cout << "| D |";
                 else
                     std::cout << "|   |";

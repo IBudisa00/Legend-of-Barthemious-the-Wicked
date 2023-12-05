@@ -1,19 +1,13 @@
 #include <iostream>
 #include <string.h>
-#include <Data.hh>
-#include <locations.hh>
-#include <locations.cpp>
+#include <cstdint>
+#include "Data.hh"
 
-Ship ship;
-Player player;
-ShipType shipRequirements[2];
-shipRequirements[0].iron = 8;
-shipRequirements[0].wood = 12;
-shipRequirements[0].rope = 6;
-
-shipRequirements[1].iron = 16;
-shipRequirements[1].wood = 24;
-shipRequirements[1].rope = 12;
+ShipType::ShipType(uint32_t ironValue, uint32_t woodValue, uint32_t ropeValue){
+    iron = ironValue;
+    wood = woodValue;
+    rope = ropeValue;
+}
 
 //----------- Start Ship functions ----------------//
 Ship::Ship(){
@@ -24,20 +18,25 @@ Ship::Ship(){
     rope = 0;
 }
 
-void Ship::UpgradeShip(){
-    if(CheckElems() == 0)
+void Ship::UpgradeShip(ShipType shipRequirements[]){
+    if(type != 3)
     {
-        std::cout << "Cannot upgrade ship, missing requirements!\n";
-        std::cout << "Check ship inventory!\n";
+        if(CheckElems(shipRequirements) == 0)
+        {
+            std::cout << "Cannot upgrade ship, missing requirements!\n";
+            std::cout << "Check ship inventory!\n";
+        }
+        else
+        {
+            type++;
+            std::cout << "Ship upgraded to " << typeToClass(type) <<"\n";
+        }
     }
     else
-    {
-        type++;
-        std::cout << "Ship upgraded to " << typeToClass(type) <<"\n";
-    }
+        std::cout << "Ship is already maximally upgraded.\n";
 }
 
-bool Ship::CheckElems(){
+bool Ship::CheckElems(ShipType shipRequirements[]){
     if((wood < shipRequirements[type-1].wood) || (iron < shipRequirements[type-1].iron) || (rope < shipRequirements[type-1].rope))
         return false;
     return true;
@@ -49,7 +48,7 @@ void Ship::CheckInv(){
     std::cout << "Rope: "<< rope<<"\n";
 }
 
-char* Ship::typeToClass(int shipType){
+const char* Ship::typeToClass(int shipType){
     if(shipType == 1)
         return "Raft";
     else if(shipType == 2)
@@ -170,9 +169,15 @@ void Player::Pickup(location *pos){
                 break;
             }
         }
-        inventory[position].type = pos->elem;
-        inventory[position].value = pos->value;
+        SetInventorySlot(pos->itemAtLocation(), pos->valueOfItemAtLocation(), position);
+        //inventory[position].type = pos->elem;
+        //inventory[position].value = pos->value;
         pos->deleteElem();
     }
+}
+
+void Player::SetInventorySlot(uint32_t element, uint32_t itemValue, int inventoryPosition){
+    inventory[inventoryPosition].type = element;
+    inventory[inventoryPosition].value = itemValue;
 }
 //----------- End Player functions ---------------//

@@ -1,6 +1,6 @@
 #include <iostream>
-#include <stdint>
-#include <locations.hh>
+#include <cstdint>
+#include "locations.hh"
 
 location::location(){
     shipAccessibleArea = false;
@@ -9,13 +9,13 @@ location::location(){
     value = 0;
 }
 
-void location::setLocation(uint32_t element, uint32_t inputValue){
+void location::setItemAtLocation(uint32_t element, uint32_t inputValue){
     elem = element;
     value = inputValue;
 }
 
 void location::setShipAccessibleArea(){
-    shipAccesableArea = true;
+    shipAccessibleArea = true;
 }
 
 void location::deleteElem(){
@@ -50,41 +50,45 @@ void location::setPlayerIsHere(bool value){
     playerIsHere = value;
 }
 
-void location::checkPlayerPosition(){
+bool location::checkPlayerPosition(){
     if(playerIsHere)
         return true;
     else
         return false;
 }
 
-void location::itemAtLocation(){
+uint32_t location::itemAtLocation(){
     return elem;
 }
 
+uint32_t location::valueOfItemAtLocation(){
+    return value;
+}
+
 //fix passing map which is 2d 
-void areaCoordinatesSetting(location *mapPointer){
+void areaCoordinatesSetting(location map[MAP1_X_CORD][MAP1_Y_CORD]){
     for(int i = 0; i < MAP1_X_CORD; i++)
     {
         for(int j = 0; j < MAP1_Y_CORD; j++)
         {
-            mapPointer->setCoordinates(i,j);
+            map[i][j].setCoordinates(i,j);
         }
     }
 }
 
-//---- Area 1 setting ------//
-location map1[MAP1_X_CORD][MAP1_Y_CORD];
-map1[0][4].setShipAccessibleArea();
-map1[1][1].setLocation(1,4);
-map1[1][6].setLocation(3,3);
-map1[3][3].setLocation(5,1);
-map1[3][6].setLocation(4,1);
-map1[4][5].setLocation(2,1);
-map1[5][0].setLocation(2,2);
-map1[5][5].setLocation(1,4);
-map1[6][3].setLocation(4,1);
-map1[6][8].setLocation(2,4);
-map1[7][7].setLocation(5,1);
-map1[8][1].setLocation(1,3);
-map1[8][4].setLocation(3,5);
-//------Area 1 setting finished ------//
+void setStartingMap(location startMap[MAP1_X_CORD][MAP1_Y_CORD]){
+    //location map1[MAP1_X_CORD][MAP1_Y_CORD];
+    startMap[0][4].setShipAccessibleArea();
+    startMap[1][1].setItemAtLocation(1,4);
+    startMap[1][6].setItemAtLocation(3,3);
+    startMap[3][3].setItemAtLocation(5,1);
+    startMap[3][6].setItemAtLocation(4,1);
+    startMap[4][5].setItemAtLocation(2,1);
+    startMap[5][0].setItemAtLocation(2,2);
+    startMap[5][5].setItemAtLocation(1,4);
+    startMap[6][3].setItemAtLocation(4,1);
+    startMap[6][8].setItemAtLocation(2,4);
+    startMap[7][7].setItemAtLocation(5,1);
+    startMap[8][1].setItemAtLocation(1,3);
+    startMap[8][4].setItemAtLocation(3,5);
+}

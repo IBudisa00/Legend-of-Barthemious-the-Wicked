@@ -1,3 +1,5 @@
+#pragma once
+#include <cstdint>
 #define MAP1_X_CORD 9
 #define MAP1_Y_CORD 9
 
@@ -20,7 +22,7 @@ class location{
         uint32_t value;
     public:
         location();
-        void setLocation(uint32_t element, uint32_t inputValue);
+        void setItemAtLocation(uint32_t element, uint32_t inputValue);
         void setShipAccessibleArea();
         void deleteElem();
         bool checkExistence();
@@ -30,6 +32,8 @@ class location{
         void setPlayerIsHere(bool value);
         bool checkPlayerPosition();
         uint32_t itemAtLocation();
+        uint32_t valueOfItemAtLocation();
 };
 
-void areaCoordinatesSetting();
+void areaCoordinatesSetting(location map[MAP1_X_CORD][MAP1_Y_CORD]);
+void setStartingMap(location startMap[MAP1_X_CORD][MAP1_Y_CORD]);
