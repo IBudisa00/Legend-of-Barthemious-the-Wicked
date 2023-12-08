@@ -3,7 +3,7 @@
 #define MAP1_X_CORD 9
 #define MAP1_Y_CORD 9
 
-/*elem types:
+/*item/elem types:
     0 - empty/no elem
     1 - wood
     2 - iron
@@ -33,6 +33,7 @@ class location{
         bool checkPlayerPosition();
         uint32_t itemAtLocation();
         uint32_t valueOfItemAtLocation();
+        bool checkShipAccessibleArea();
 };
 
 void areaCoordinatesSetting(location map[MAP1_X_CORD][MAP1_Y_CORD]);

@@ -57,37 +57,21 @@ const char* Ship::typeToClass(int shipType){
         return "Frigate";
 }
 
-void Ship::StoreItem(int typeOfItem, int nameOfItem, int valueOfItem){
-    if(typeOfItem == 0)
-    {
-        std::cout<<"Nothing to store at ship.\n";
-        return;
-    }
-    else if(typeOfItem == 1)
-    {
-        if(nameOfItem == 1)
-        {
-            wood+=valueOfItem;
-        }
-        else if(nameOfItem == 2)
-        {
-            iron+=valueOfItem;
-        }
-        else
-        {
-            rope+=valueOfItem;
-        }
-        return;
-    }
-    else if((typeOfItem == 2)||(typeOfItem == 3))
-    {
-        std::cout<<"Cannot store this item at ship.\n";
-        return;
-    }
+void Ship::StoreItem(int typeOfItem, int valueOfItem){
+    if(typeOfItem == 1)
+        wood+=valueOfItem;
+    else if(typeOfItem == 2)
+        iron+=valueOfItem;
+    else if(typeOfItem == 3)
+        rope+=valueOfItem;
 }
 
 void Ship::Sail(){
     std::cout<<"Sailing to next land...\n";
+}
+
+uint32_t Ship::getShipType(){
+    return type;
 }
 
 //----------- End Ship functions ----------------//
@@ -98,12 +82,6 @@ void Player::SetName(char* desiredName){
 }
 
 void Player::Eat(int slot){
-    if(slot > 5)
-    {
-        std::cout << "Invalid slot position, maximum position is 5!\n";
-        return;
-    }
-
     if(inventory[slot-1].type != 2)
         std::cout << "Item at slot "<< slot <<" isn't food!\n";
     else
@@ -125,12 +103,6 @@ void Player::Eat(int slot){
 }
 
 void Player::Drink(int slot){
-    if(slot > 5)
-    {
-        std::cout << "Invalid slot position, maximum position is 5!\n";
-        return;
-    }
-
     if(inventory[slot-1].type != 3)
         std::cout << "Item at slot "<< slot <<" isn't drink!\n";
     else
@@ -170,8 +142,6 @@ void Player::Pickup(location *pos){
             }
         }
         SetInventorySlot(pos->itemAtLocation(), pos->valueOfItemAtLocation(), position);
-        //inventory[position].type = pos->elem;
-        //inventory[position].value = pos->value;
         pos->deleteElem();
     }
 }
@@ -180,4 +150,40 @@ void Player::SetInventorySlot(uint32_t element, uint32_t itemValue, int inventor
     inventory[inventoryPosition].type = element;
     inventory[inventoryPosition].value = itemValue;
 }
+
+bool Player::checkInvForItem(uint32_t slot){
+    if(inventory[slot-1].value)
+        return true;
+    else
+        return false;
+}
+
+void Player::removeItemFromInv(uint32_t slot){
+    SetInventorySlot(0, 0, slot-1);
+}
+
+uint32_t Player::getItemType(int slot){
+    return inventory[slot-1].type;
+}
+
+uint32_t Player::getItemValue(int slot){
+    return inventory[slot-1].value;
+}
 //----------- End Player functions ---------------//
+
+void consumingItem(Player *playerInfo, uint32_t functionOfConsuming){
+    int itemSlot;
+    std::cout << "Select item slot to consume: ";
+    std::cin >> itemSlot;
+    if(itemSlot > INV_SIZE)
+    {
+        std::cout << "Invalid slot position, maximum position is 5!\n";
+    }
+    else
+    {
+        if(functionOfConsuming == eat)
+            playerInfo->Eat(itemSlot);
+        else
+            playerInfo->Drink(itemSlot);
+    }
+}

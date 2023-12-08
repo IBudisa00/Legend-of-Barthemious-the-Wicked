@@ -6,25 +6,25 @@
 #define MAX_FOOD_AND_THIRST_LEVEL 5
 #define INV_SIZE 5
 
+enum consumation{
+    eat = 1,
+    drink
+};
+
 struct Status {
     uint32_t food = MAX_FOOD_AND_THIRST_LEVEL;
     uint32_t thirst = MAX_FOOD_AND_THIRST_LEVEL;
 };
 
-/*
-  type of items:
-    0 - EMPTY SLOT
-    1 - building
-    2 - food
-    3 - drink
-
-  itemName list:
-    1 - Wood
-    2 - Iron
-    3 - Rope
-    4 - Rum
-    5 - Crab
+/*item types:
+    0 - empty/no elem
+    1 - wood
+    2 - iron
+    3 - rope
+    4 - food
+    5 - drink
 */
+
 struct Item {
     uint32_t type;
     uint32_t value;
@@ -49,6 +49,10 @@ class Player {
         void Drink(int slot);
         void Pickup(location *pos);
         void SetInventorySlot(uint32_t element, uint32_t itemValue, int inventoryPosition);
+        bool checkInvForItem(uint32_t slot);
+        void removeItemFromInv(uint32_t slot);
+        uint32_t getItemType(int slot);
+        uint32_t getItemValue(int slot);
 };
 
 class Ship{
@@ -64,6 +68,9 @@ class Ship{
         bool CheckElems(ShipType shipRequirements[]);
         void CheckInv();
         const char* typeToClass(int shipType);
-        void StoreItem(int typeOfItem, int nameOfItem, int valueOfItem);
+        void StoreItem(int typeOfItem, int valueOfItem);
         void Sail();
+        uint32_t getShipType();
 };
+
+void consumingItem(Player *playerInfo, uint32_t functionOfConsuming);

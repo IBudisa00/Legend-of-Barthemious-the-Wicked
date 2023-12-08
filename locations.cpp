@@ -65,6 +65,13 @@ uint32_t location::valueOfItemAtLocation(){
     return value;
 }
 
+bool location::checkShipAccessibleArea(){
+    if(shipAccessibleArea)
+        return true;
+    else
+        return false;
+}
+
 //fix passing map which is 2d 
 void areaCoordinatesSetting(location map[MAP1_X_CORD][MAP1_Y_CORD]){
     for(int i = 0; i < MAP1_X_CORD; i++)

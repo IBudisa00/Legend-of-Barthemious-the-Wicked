@@ -13,6 +13,7 @@ void PlayGame();
 void StartGame();
 uint32_t commandToInt(char *command);
 void printMap(location gameMap[MAP1_X_CORD][MAP1_Y_CORD]);
+bool checkRequirementsForSailing(Ship ship);
 
 int main(){
     PlayGame();
@@ -41,11 +42,13 @@ void StartCommands(){
 };
 
 void listOfCommands(){
-    std::cout << "/eat_<x> - Eat item at inventory slot x, e.g. /eat_4  <--- eats item at slot 4\n \
-                  /drink_<x> - Drink item at inventory slot x, e.g. /drink_4  <--- drinks item at slot 4\n \
+    std::cout << "/eat - Open inventory to eat\n \
+                  /drink - Open inventory to drink\n \
                   /pickup - Picks item up from current location\n \
                   /upgrade - Upgrade ship\n \
                   /shipinv - Check ship's inventory (building materials)\n \
+                  /sail - Sail to next island\n \
+                  /store - Store items from inventory to ship (only wood, iron and rope can be stored)\n \
                   /commands - List of commands\n \
                   /exit - Exit game\n";
 };
@@ -112,11 +115,10 @@ void StartGame()
                 }
                 break;
             case 5:
-                //eat
+                consumingItem(playerPointer, eat);
                 break;
             case 6:
-                //drink
-                //same as eat
+                consumingItem(playerPointer, drink);
                 break;
             case 7:
                 if(position->getx() == 0)
@@ -170,6 +172,31 @@ void StartGame()
                     printMap(map1);
                 }
                 break;
+            case 11:
+                if(position->checkShipAccessibleArea())
+                {
+                    if(checkRequirementsForSailing(ship))
+                        ship.Sail();
+                    else
+                        std::cout << "Ship must be upgraded before it can be sailed through murky waters.\n";
+                }
+                else
+                {
+                    std::cout << "Cannot sail from here, go back to the ship to sail.\n";
+                }
+            case 12:
+                if(position->checkShipAccessibleArea())
+                {
+                    for(int i = 0; i < INV_SIZE; i++)
+                    {
+                        if(playerPointer->checkInvForItem(i))
+                            ship.StoreItem(playerPointer->getItemType(i),playerPointer->getItemValue(i));
+                    }
+                }
+                else
+                {
+                    std::cout << "Cannot access ship from here, go back to the ship to store items.\n";
+                }
             case 3:
                 std::cout << "Exiting game...\n";
                 gameOngoing = false;
@@ -204,6 +231,10 @@ uint32_t commandToInt(char *command){
         return 9;
     else if(strcmp(command, "/right") == 0)
         return 10;
+    else if(strcmp(command, "/sail") == 0)
+        return 11;
+    else if(strcmp(command, "/store") == 0)
+        return 12;
     else
         return 0;
 }
@@ -234,4 +265,11 @@ void printMap(location gameMap[MAP1_X_CORD][MAP1_Y_CORD]){
         }
         std::cout <<"\n";
     }
+}
+
+bool checkRequirementsForSailing(Ship ship){
+    if(ship.getShipType() > 1)
+        return true;
+    else
+        return false;
 }
