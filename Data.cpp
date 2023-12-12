@@ -18,10 +18,10 @@ Ship::Ship(){
     rope = 0;
 }
 
-void Ship::UpgradeShip(ShipType shipRequirements[]){
+void Ship::upgradeShip(ShipType shipRequirements[]){
     if(type != 3)
     {
-        if(CheckElems(shipRequirements) == 0)
+        if(checkElems(shipRequirements) == 0)
         {
             std::cout << "Cannot upgrade ship, missing requirements!\n";
             std::cout << "Check ship inventory!\n";
@@ -36,13 +36,13 @@ void Ship::UpgradeShip(ShipType shipRequirements[]){
         std::cout << "Ship is already maximally upgraded.\n";
 }
 
-bool Ship::CheckElems(ShipType shipRequirements[]){
+bool Ship::checkElems(ShipType shipRequirements[]){
     if((wood < shipRequirements[type-1].wood) || (iron < shipRequirements[type-1].iron) || (rope < shipRequirements[type-1].rope))
         return false;
     return true;
 }
 
-void Ship::CheckInv(){
+void Ship::checkInv(){
     std::cout << "Iron: "<< iron<<"\n";
     std::cout << "Wood: "<< wood<<"\n";
     std::cout << "Rope: "<< rope<<"\n";
@@ -57,7 +57,7 @@ const char* Ship::typeToClass(int shipType){
         return "Frigate";
 }
 
-void Ship::StoreItem(int typeOfItem, int valueOfItem){
+void Ship::storeItem(int typeOfItem, int valueOfItem){
     if(typeOfItem == 1)
         wood+=valueOfItem;
     else if(typeOfItem == 2)
@@ -66,7 +66,7 @@ void Ship::StoreItem(int typeOfItem, int valueOfItem){
         rope+=valueOfItem;
 }
 
-void Ship::Sail(){
+void Ship::sail(){
     std::cout<<"Sailing to next land...\n";
 }
 
@@ -77,11 +77,22 @@ uint32_t Ship::getShipType(){
 //----------- End Ship functions ----------------//
 
 //----------- Start Player functions ---------------//
-void Player::SetName(char* desiredName){
-    strcpy(desiredName, name);
+Player::Player(){
+    strcpy(name,"Unnamed Entity");
+    stats.food = MAX_FOOD_AND_THIRST_LEVEL;
+    stats.thirst = MAX_FOOD_AND_THIRST_LEVEL;
+
+    for(int i = 0; i<INV_SIZE; i++)
+    {
+        inventory[i].value = 0;
+        inventory[i].type = 0;
+    }
+}
+void Player::setName(char* desiredName){
+    strcpy(name, desiredName);
 }
 
-void Player::Eat(int slot){
+void Player::eat(int slot){
     if(inventory[slot-1].type != 2)
         std::cout << "Item at slot "<< slot <<" isn't food!\n";
     else
@@ -102,7 +113,7 @@ void Player::Eat(int slot){
 
 }
 
-void Player::Drink(int slot){
+void Player::drink(int slot){
     if(inventory[slot-1].type != 3)
         std::cout << "Item at slot "<< slot <<" isn't drink!\n";
     else
@@ -123,7 +134,7 @@ void Player::Drink(int slot){
 
 }
 
-void Player::Pickup(location *pos){
+void Player::pickup(location *pos){
     int position;
 
     if(inventory[INV_SIZE-1].value != 0)
@@ -141,12 +152,12 @@ void Player::Pickup(location *pos){
                 break;
             }
         }
-        SetInventorySlot(pos->itemAtLocation(), pos->valueOfItemAtLocation(), position);
+        setInventorySlot(pos->itemAtLocation(), pos->valueOfItemAtLocation(), position);
         pos->deleteElem();
     }
 }
 
-void Player::SetInventorySlot(uint32_t element, uint32_t itemValue, int inventoryPosition){
+void Player::setInventorySlot(uint32_t element, uint32_t itemValue, int inventoryPosition){
     inventory[inventoryPosition].type = element;
     inventory[inventoryPosition].value = itemValue;
 }
@@ -159,7 +170,7 @@ bool Player::checkInvForItem(uint32_t slot){
 }
 
 void Player::removeItemFromInv(uint32_t slot){
-    SetInventorySlot(0, 0, slot-1);
+    setInventorySlot(0, 0, slot-1);
 }
 
 uint32_t Player::getItemType(int slot){
@@ -168,6 +179,15 @@ uint32_t Player::getItemType(int slot){
 
 uint32_t Player::getItemValue(int slot){
     return inventory[slot-1].value;
+}
+
+void Player::changePlayerStats(uint32_t consumationType){
+    if(consumationType == consumation::eat)
+        stats.food--;
+    else if(consumationType == consumation::drink)
+        stats.thirst--;
+    else
+        std::cout << "Unknown consumationType...\n";
 }
 //----------- End Player functions ---------------//
 
@@ -182,8 +202,8 @@ void consumingItem(Player *playerInfo, uint32_t functionOfConsuming){
     else
     {
         if(functionOfConsuming == eat)
-            playerInfo->Eat(itemSlot);
+            playerInfo->eat(itemSlot);
         else
-            playerInfo->Drink(itemSlot);
+            playerInfo->drink(itemSlot);
     }
 }

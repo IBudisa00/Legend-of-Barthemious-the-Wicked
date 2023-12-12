@@ -6,24 +6,25 @@
 
 #define MAX_COMMANDS_SIZE 16
 
-void StoryLine();
-void StartCommands();
+void storyLine();
+void startCommands();
 void listOfCommands();
-void PlayGame();
-void StartGame();
+void playGame();
+void startGame();
 uint32_t commandToInt(char *command);
 void printMap(location gameMap[MAP1_X_CORD][MAP1_Y_CORD]);
 bool checkRequirementsForSailing(Ship ship);
+void updatePlayerNeeds(Player *playerPointer, uint32_t needsCounter);
 
 int main(){
-    PlayGame();
+    playGame();
     //Release data
 
     return 0;
 }
 
-void StoryLine(){
-    std::cout << "Arrrrg mattey!\n\t \
+void storyLine(){
+    std::cout << "\tArrrrg mattey!\n\t \
                 Welcome to the Legend of Barthemious the Wicked, most cruel and gold driven pirate of them all.\n\t \
                 He was so keen to becoming the richest pirate that he sacrificed his whole crew to gain mountains of gold.\n\t \
                 Legend says that in his madness he hid his gold somewhere in Sea of Desires and that madness drowe him to his death.\n\t \
@@ -35,7 +36,7 @@ void StoryLine(){
                 Good luck mattey!\n";
 }
 
-void StartCommands(){
+void startCommands(){
     std::cout << "/commands - List of commands\n \
                   /start - Start game\n \
                   /exit - Exit game\n";
@@ -53,18 +54,18 @@ void listOfCommands(){
                   /exit - Exit game\n";
 };
 
-void PlayGame(){
+void playGame(){
     bool acceptableCommand = true;
     char command[MAX_COMMANDS_SIZE];
 
-    StartCommands();
+    startCommands();
     while(acceptableCommand)
     {
         std::cin >> command;
         switch(commandToInt(command))
         {
             case 1:
-                StartGame();
+                startGame();
                 acceptableCommand = false;
                 break;
             case 2:
@@ -81,7 +82,7 @@ void PlayGame(){
     }
 }
 
-void StartGame()
+void startGame()
 {
     bool gameOngoing = true;
     bool gameEnds = false;
@@ -93,13 +94,17 @@ void StartGame()
     Player *playerPointer = &player;
     Ship ship;
     ShipType shipRequirements[2] = {ShipType(8, 12, 6), ShipType(16, 24, 12)};
+    uint32_t needsCounter = 0;
 
     areaCoordinatesSetting(map1);
     setStartingMap(map1);
-    StoryLine();
+    storyLine();
     std::cout <<"Enter your name: ";
     std::cin >> desiredName;
-    playerPointer->SetName(desiredName);
+    playerPointer->setName(desiredName);
+    position->setPlayerIsHere(true);
+    printMap(map1);
+
     while(gameOngoing)
     {
         std::cin >> command;
@@ -111,7 +116,7 @@ void StartGame()
             case 4:
                 if(position->checkExistence())
                 {
-                    playerPointer->Pickup(position);
+                    playerPointer->pickup(position);
                 }
                 break;
             case 5:
@@ -131,6 +136,8 @@ void StartGame()
                     position = &map1[position->getx() - 1][position->gety()];
                     position->setPlayerIsHere(true);
                     printMap(map1);
+                    needsCounter++;
+                    updatePlayerNeeds(playerPointer, needsCounter);
                 }
                 break;
             case 8:
@@ -144,6 +151,8 @@ void StartGame()
                     position = &map1[position->getx() + 1][position->gety()];
                     position->setPlayerIsHere(true);
                     printMap(map1);
+                    needsCounter++;
+                    updatePlayerNeeds(playerPointer, needsCounter);
                 }
                 break;
             case 9:
@@ -157,6 +166,8 @@ void StartGame()
                     position = &map1[position->getx()][position->gety() - 1];
                     position->setPlayerIsHere(true);
                     printMap(map1);
+                    needsCounter++;
+                    updatePlayerNeeds(playerPointer, needsCounter);
                 }
                 break;
             case 10:
@@ -170,13 +181,15 @@ void StartGame()
                     position = &map1[position->getx()][position->gety() + 1];
                     position->setPlayerIsHere(true);
                     printMap(map1);
+                    needsCounter++;
+                    updatePlayerNeeds(playerPointer, needsCounter);
                 }
                 break;
             case 11:
                 if(position->checkShipAccessibleArea())
                 {
                     if(checkRequirementsForSailing(ship))
-                        ship.Sail();
+                        ship.sail();
                     else
                         std::cout << "Ship must be upgraded before it can be sailed through murky waters.\n";
                 }
@@ -184,19 +197,21 @@ void StartGame()
                 {
                     std::cout << "Cannot sail from here, go back to the ship to sail.\n";
                 }
+                break;
             case 12:
                 if(position->checkShipAccessibleArea())
                 {
                     for(int i = 0; i < INV_SIZE; i++)
                     {
                         if(playerPointer->checkInvForItem(i))
-                            ship.StoreItem(playerPointer->getItemType(i),playerPointer->getItemValue(i));
+                            ship.storeItem(playerPointer->getItemType(i),playerPointer->getItemValue(i));
                     }
                 }
                 else
                 {
                     std::cout << "Cannot access ship from here, go back to the ship to store items.\n";
                 }
+                break;
             case 3:
                 std::cout << "Exiting game...\n";
                 gameOngoing = false;
@@ -272,4 +287,11 @@ bool checkRequirementsForSailing(Ship ship){
         return true;
     else
         return false;
+}
+
+void updatePlayerNeeds(Player *playerPointer, uint32_t needsCounter){
+    if(needsCounter % 8 == 0)
+        playerPointer->changePlayerStats(drink);
+    if(needsCounter % 12 == 0)
+        playerPointer->changePlayerStats(eat);
 }

@@ -40,19 +40,20 @@ struct ShipType {
 class Player {
     private:
         char name[MAX_NAME];
-        uint32_t health_point = 100;
         Status stats;
         Item inventory[INV_SIZE]; 
     public:
-        void SetName(char* desiredName);
-        void Eat(int slot);
-        void Drink(int slot);
-        void Pickup(location *pos);
-        void SetInventorySlot(uint32_t element, uint32_t itemValue, int inventoryPosition);
+        Player();
+        void setName(char* desiredName);
+        void eat(int slot);
+        void drink(int slot);
+        void pickup(location *pos);
+        void setInventorySlot(uint32_t element, uint32_t itemValue, int inventoryPosition);
         bool checkInvForItem(uint32_t slot);
         void removeItemFromInv(uint32_t slot);
         uint32_t getItemType(int slot);
         uint32_t getItemValue(int slot);
+        void changePlayerStats(uint32_t consumationType);
 };
 
 class Ship{
@@ -64,12 +65,12 @@ class Ship{
         uint32_t rope = 0;
     public:
         Ship();
-        void UpgradeShip(ShipType shipRequirements[]);
-        bool CheckElems(ShipType shipRequirements[]);
-        void CheckInv();
+        void upgradeShip(ShipType shipRequirements[]);
+        bool checkElems(ShipType shipRequirements[]);
+        void checkInv();
         const char* typeToClass(int shipType);
-        void StoreItem(int typeOfItem, int valueOfItem);
-        void Sail();
+        void storeItem(int typeOfItem, int valueOfItem);
+        void sail();
         uint32_t getShipType();
 };
 
