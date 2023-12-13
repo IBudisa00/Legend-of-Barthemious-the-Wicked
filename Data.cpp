@@ -135,26 +135,16 @@ void Player::drink(int slot){
 }
 
 void Player::pickup(location *pos){
-    int position;
-
-    if(inventory[INV_SIZE-1].value != 0)
+    for(int i = 0; i < INV_SIZE; i++)
     {
-        std::cout << "All inventory slots taken!\n";
-        return;
-    }
-    else
-    {
-        for(int i = 0; i < INV_SIZE; i++)
+        if(inventory[i].type == 0)
         {
-            if(inventory[i].value == 0)
-            {
-                position = i;
-                break;
-            }
+            setInventorySlot(pos->itemAtLocation(), pos->valueOfItemAtLocation(), i);
+            pos->deleteElem();
+            return;
         }
-        setInventorySlot(pos->itemAtLocation(), pos->valueOfItemAtLocation(), position);
-        pos->deleteElem();
     }
+    std::cout << "All inventory slots taken!\n";
 }
 
 void Player::setInventorySlot(uint32_t element, uint32_t itemValue, int inventoryPosition){
@@ -163,7 +153,7 @@ void Player::setInventorySlot(uint32_t element, uint32_t itemValue, int inventor
 }
 
 bool Player::checkInvForItem(uint32_t slot){
-    if(inventory[slot].value)
+    if(inventory[slot].type)
         return true;
     else
         return false;
@@ -195,6 +185,13 @@ uint32_t Player::getPlayerHunger(){
 }
 uint32_t Player::getPlayerThirst(){
     return stats.thirst;
+}
+
+bool Player::isStorableItem(int slot){
+    if((inventory[slot].type != 4) && (inventory[slot].type != 5))
+        return true;
+    else
+        return false;
 }
 //----------- End Player functions ---------------//
 

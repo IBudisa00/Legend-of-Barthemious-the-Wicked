@@ -56,6 +56,7 @@ class Player {
         void changePlayerStats(uint32_t consumationType);
         uint32_t getPlayerHunger();
         uint32_t getPlayerThirst();
+        bool isStorableItem(int slot);
 };
 
 class Ship{

@@ -208,7 +208,7 @@ void startGame()
                     if(checkRequirementsForSailing(ship))
                     {
                         ship.sail();
-                        std::cout << "Congrats you escaped to calm waters, continue your life in hapiness and enjoy paradise islands.\n";
+                        std::cout << "Congrats you escaped to calm waters, continue your life in happiness and enjoy paradise islands.\n";
                         gameOngoing = false;
                     }
                     else
@@ -226,8 +226,11 @@ void startGame()
                     {
                         if(playerPointer->checkInvForItem(i))
                         {
-                            ship.storeItem(playerPointer->getItemType(i),playerPointer->getItemValue(i));
-                            playerPointer->removeItemFromInv(i);
+                            if(playerPointer->isStorableItem(i))
+                            {
+                                ship.storeItem(playerPointer->getItemType(i),playerPointer->getItemValue(i));
+                                playerPointer->removeItemFromInv(i);
+                            }
                         }
                     }
                 }
@@ -329,6 +332,8 @@ void printMap(location gameMap[MAP1_X_CORD][MAP1_Y_CORD]){
                     std::cout << "| F |";
                 else if(gameMap[i][j].itemAtLocation() == 5)
                     std::cout << "| D |";
+                else if(gameMap[i][j].checkShipAccessibleArea())
+                    std::cout << "| S |";
                 else
                     std::cout << "|   |";
             }
