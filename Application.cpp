@@ -14,7 +14,8 @@ void startGame();
 uint32_t commandToInt(char *command);
 void printMap(location gameMap[MAP1_X_CORD][MAP1_Y_CORD]);
 bool checkRequirementsForSailing(Ship ship);
-void updatePlayerNeeds(Player *playerPointer, uint32_t needsCounter);
+void updatePlayerNeeds(Player *playerPointer, uint32_t needsCounter, bool counterUpdated);
+void printInventory(Player *playerPointer);
 
 int main(){
     playGame();
@@ -43,7 +44,11 @@ void startCommands(){
 };
 
 void listOfCommands(){
-    std::cout << "/eat - Open inventory to eat\n \
+    std::cout << "/up - Go up\n \
+                  /down - Go down\n \
+                  /left - Go left\n \
+                  /right - Go right\n \
+                  /eat - Open inventory to eat\n \
                   /drink - Open inventory to drink\n \
                   /pickup - Picks item up from current location\n \
                   /upgrade - Upgrade ship\n \
@@ -85,7 +90,6 @@ void playGame(){
 void startGame()
 {
     bool gameOngoing = true;
-    bool gameEnds = false;
     char command[MAX_COMMANDS_SIZE];
     char desiredName[MAX_NAME];
     location map1[MAP1_X_CORD][MAP1_Y_CORD];
@@ -117,13 +121,22 @@ void startGame()
                 if(position->checkExistence())
                 {
                     playerPointer->pickup(position);
+                    updatePlayerNeeds(playerPointer, needsCounter, false);
+                    printInventory(playerPointer);
+                    printMap(map1);
                 }
                 break;
             case 5:
                 consumingItem(playerPointer, eat);
+                updatePlayerNeeds(playerPointer, needsCounter, false);
+                printInventory(playerPointer);
+                printMap(map1);
                 break;
             case 6:
                 consumingItem(playerPointer, drink);
+                updatePlayerNeeds(playerPointer, needsCounter, false);
+                printInventory(playerPointer);
+                printMap(map1);
                 break;
             case 7:
                 if(position->getx() == 0)
@@ -135,9 +148,10 @@ void startGame()
                     position->setPlayerIsHere(false);
                     position = &map1[position->getx() - 1][position->gety()];
                     position->setPlayerIsHere(true);
-                    printMap(map1);
                     needsCounter++;
-                    updatePlayerNeeds(playerPointer, needsCounter);
+                    updatePlayerNeeds(playerPointer, needsCounter, true);
+                    printInventory(playerPointer);
+                    printMap(map1);
                 }
                 break;
             case 8:
@@ -150,9 +164,10 @@ void startGame()
                     position->setPlayerIsHere(false);
                     position = &map1[position->getx() + 1][position->gety()];
                     position->setPlayerIsHere(true);
-                    printMap(map1);
                     needsCounter++;
-                    updatePlayerNeeds(playerPointer, needsCounter);
+                    updatePlayerNeeds(playerPointer, needsCounter, true);
+                    printInventory(playerPointer);
+                    printMap(map1);
                 }
                 break;
             case 9:
@@ -165,9 +180,10 @@ void startGame()
                     position->setPlayerIsHere(false);
                     position = &map1[position->getx()][position->gety() - 1];
                     position->setPlayerIsHere(true);
-                    printMap(map1);
                     needsCounter++;
-                    updatePlayerNeeds(playerPointer, needsCounter);
+                    updatePlayerNeeds(playerPointer, needsCounter, true);
+                    printInventory(playerPointer);
+                    printMap(map1);
                 }
                 break;
             case 10:
@@ -180,16 +196,21 @@ void startGame()
                     position->setPlayerIsHere(false);
                     position = &map1[position->getx()][position->gety() + 1];
                     position->setPlayerIsHere(true);
-                    printMap(map1);
                     needsCounter++;
-                    updatePlayerNeeds(playerPointer, needsCounter);
+                    updatePlayerNeeds(playerPointer, needsCounter, true);
+                    printInventory(playerPointer);
+                    printMap(map1);
                 }
                 break;
             case 11:
                 if(position->checkShipAccessibleArea())
                 {
                     if(checkRequirementsForSailing(ship))
+                    {
                         ship.sail();
+                        std::cout << "Congrats you escaped to calm waters, continue your life in hapiness and enjoy paradise islands.\n";
+                        gameOngoing = false;
+                    }
                     else
                         std::cout << "Ship must be upgraded before it can be sailed through murky waters.\n";
                 }
@@ -204,13 +225,45 @@ void startGame()
                     for(int i = 0; i < INV_SIZE; i++)
                     {
                         if(playerPointer->checkInvForItem(i))
+                        {
                             ship.storeItem(playerPointer->getItemType(i),playerPointer->getItemValue(i));
+                            playerPointer->removeItemFromInv(i);
+                        }
                     }
                 }
                 else
                 {
                     std::cout << "Cannot access ship from here, go back to the ship to store items.\n";
                 }
+                updatePlayerNeeds(playerPointer, needsCounter, false);
+                printInventory(playerPointer);
+                printMap(map1);
+                break;
+            case 13:
+                if(position->checkShipAccessibleArea())
+                {
+                    ship.checkInv();
+                }
+                else
+                {
+                    std::cout << "Cannot access ship from here, go back to the ship to check inventory.\n";
+                }
+                updatePlayerNeeds(playerPointer, needsCounter, false);
+                printInventory(playerPointer);
+                printMap(map1);
+                break;
+            case 14:
+                if(position->checkShipAccessibleArea())
+                {
+                    ship.upgradeShip(shipRequirements);
+                }
+                else
+                {
+                    std::cout << "Cannot upgrade ship from here, go back to the ship.\n";
+                }
+                updatePlayerNeeds(playerPointer, needsCounter, false);
+                printInventory(playerPointer);
+                printMap(map1);
                 break;
             case 3:
                 std::cout << "Exiting game...\n";
@@ -220,8 +273,6 @@ void startGame()
                 std::cout << "Unknown command\n";
                 break;
         }
-        if(gameEnds)
-            gameOngoing = false;
     }
 }
 
@@ -250,6 +301,10 @@ uint32_t commandToInt(char *command){
         return 11;
     else if(strcmp(command, "/store") == 0)
         return 12;
+    else if(strcmp(command, "/shipinv") == 0)
+        return 13;
+    else if(strcmp(command, "/upgrade") == 0)
+        return 14;
     else
         return 0;
 }
@@ -289,9 +344,27 @@ bool checkRequirementsForSailing(Ship ship){
         return false;
 }
 
-void updatePlayerNeeds(Player *playerPointer, uint32_t needsCounter){
-    if(needsCounter % 8 == 0)
-        playerPointer->changePlayerStats(drink);
-    if(needsCounter % 12 == 0)
-        playerPointer->changePlayerStats(eat);
+void updatePlayerNeeds(Player *playerPointer, uint32_t needsCounter, bool counterUpdated){
+    if(counterUpdated)
+    {
+        if(needsCounter % 8 == 0)
+            playerPointer->changePlayerStats(drink);
+        if(needsCounter % 12 == 0)
+            playerPointer->changePlayerStats(eat);
+    }
+
+    std::cout << "Hunger: "<< playerPointer->getPlayerHunger();
+    std::cout << "\tThirst: "<< playerPointer->getPlayerThirst() <<std::endl;
+}
+
+void printInventory(Player *playerPointer){
+    for(int i = 0; i <INV_SIZE; i++){
+        std::cout << "|Slot " << i+1 <<": ";
+
+        if(playerPointer->getItemType(i) == 0)
+            std::cout << " \t";
+        else
+            std::cout << playerPointer->getItemType(i)<< "\t";
+    }
+    std::cout << "\n";
 }

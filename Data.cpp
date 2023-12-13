@@ -93,7 +93,7 @@ void Player::setName(char* desiredName){
 }
 
 void Player::eat(int slot){
-    if(inventory[slot-1].type != 2)
+    if(inventory[slot-1].type != 4)
         std::cout << "Item at slot "<< slot <<" isn't food!\n";
     else
     {
@@ -114,7 +114,7 @@ void Player::eat(int slot){
 }
 
 void Player::drink(int slot){
-    if(inventory[slot-1].type != 3)
+    if(inventory[slot-1].type != 5)
         std::cout << "Item at slot "<< slot <<" isn't drink!\n";
     else
     {
@@ -163,22 +163,22 @@ void Player::setInventorySlot(uint32_t element, uint32_t itemValue, int inventor
 }
 
 bool Player::checkInvForItem(uint32_t slot){
-    if(inventory[slot-1].value)
+    if(inventory[slot].value)
         return true;
     else
         return false;
 }
 
 void Player::removeItemFromInv(uint32_t slot){
-    setInventorySlot(0, 0, slot-1);
+    setInventorySlot(0, 0, slot);
 }
 
 uint32_t Player::getItemType(int slot){
-    return inventory[slot-1].type;
+    return inventory[slot].type;
 }
 
 uint32_t Player::getItemValue(int slot){
-    return inventory[slot-1].value;
+    return inventory[slot].value;
 }
 
 void Player::changePlayerStats(uint32_t consumationType){
@@ -188,6 +188,13 @@ void Player::changePlayerStats(uint32_t consumationType){
         stats.thirst--;
     else
         std::cout << "Unknown consumationType...\n";
+}
+
+uint32_t Player::getPlayerHunger(){
+    return stats.food;
+}
+uint32_t Player::getPlayerThirst(){
+    return stats.thirst;
 }
 //----------- End Player functions ---------------//
 

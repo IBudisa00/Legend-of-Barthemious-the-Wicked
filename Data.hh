@@ -54,6 +54,8 @@ class Player {
         uint32_t getItemType(int slot);
         uint32_t getItemValue(int slot);
         void changePlayerStats(uint32_t consumationType);
+        uint32_t getPlayerHunger();
+        uint32_t getPlayerThirst();
 };
 
 class Ship{
