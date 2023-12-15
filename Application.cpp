@@ -16,6 +16,7 @@ void printMap(location gameMap[MAP1_X_CORD][MAP1_Y_CORD]);
 bool checkRequirementsForSailing(Ship ship);
 void updatePlayerNeeds(Player *playerPointer, uint32_t needsCounter, bool counterUpdated);
 void printInventory(Player *playerPointer);
+void printMapLegend();
 
 int main(){
     playGame();
@@ -44,7 +45,8 @@ void startCommands(){
 };
 
 void listOfCommands(){
-    std::cout << "/up - Go up\n \
+    std::cout << "/maplegend - Map legend\n \
+                  /up - Go up\n \
                   /down - Go down\n \
                   /left - Go left\n \
                   /right - Go right\n \
@@ -127,13 +129,13 @@ void startGame()
                 }
                 break;
             case 5:
-                consumingItem(playerPointer, eat);
+                consumingItem(playerPointer, eating);
                 updatePlayerNeeds(playerPointer, needsCounter, false);
                 printInventory(playerPointer);
                 printMap(map1);
                 break;
             case 6:
-                consumingItem(playerPointer, drink);
+                consumingItem(playerPointer, drinking);
                 updatePlayerNeeds(playerPointer, needsCounter, false);
                 printInventory(playerPointer);
                 printMap(map1);
@@ -150,8 +152,14 @@ void startGame()
                     position->setPlayerIsHere(true);
                     needsCounter++;
                     updatePlayerNeeds(playerPointer, needsCounter, true);
-                    printInventory(playerPointer);
-                    printMap(map1);
+
+                    if(playerPointer->checkIsPlayerAlive())
+                    {
+                        printInventory(playerPointer);
+                        printMap(map1);
+                    }
+                    else
+                        gameOngoing = false;
                 }
                 break;
             case 8:
@@ -166,8 +174,14 @@ void startGame()
                     position->setPlayerIsHere(true);
                     needsCounter++;
                     updatePlayerNeeds(playerPointer, needsCounter, true);
-                    printInventory(playerPointer);
-                    printMap(map1);
+
+                    if(playerPointer->checkIsPlayerAlive())
+                    {
+                        printInventory(playerPointer);
+                        printMap(map1);
+                    }
+                    else
+                        gameOngoing = false;
                 }
                 break;
             case 9:
@@ -182,8 +196,14 @@ void startGame()
                     position->setPlayerIsHere(true);
                     needsCounter++;
                     updatePlayerNeeds(playerPointer, needsCounter, true);
-                    printInventory(playerPointer);
-                    printMap(map1);
+
+                    if(playerPointer->checkIsPlayerAlive())
+                    {
+                        printInventory(playerPointer);
+                        printMap(map1);
+                    }
+                    else
+                        gameOngoing = false;
                 }
                 break;
             case 10:
@@ -198,8 +218,14 @@ void startGame()
                     position->setPlayerIsHere(true);
                     needsCounter++;
                     updatePlayerNeeds(playerPointer, needsCounter, true);
-                    printInventory(playerPointer);
-                    printMap(map1);
+
+                    if(playerPointer->checkIsPlayerAlive())
+                    {
+                        printInventory(playerPointer);
+                        printMap(map1);
+                    }
+                    else
+                        gameOngoing = false;
                 }
                 break;
             case 11:
@@ -268,6 +294,12 @@ void startGame()
                 printInventory(playerPointer);
                 printMap(map1);
                 break;
+            case 15:
+                printMapLegend();
+                updatePlayerNeeds(playerPointer, needsCounter, false);
+                printInventory(playerPointer);
+                printMap(map1);
+                break;
             case 3:
                 std::cout << "Exiting game...\n";
                 gameOngoing = false;
@@ -308,6 +340,8 @@ uint32_t commandToInt(char *command){
         return 13;
     else if(strcmp(command, "/upgrade") == 0)
         return 14;
+    else if(strcmp(command, "/maplegend") == 0)
+        return 15;
     else
         return 0;
 }
@@ -353,9 +387,9 @@ void updatePlayerNeeds(Player *playerPointer, uint32_t needsCounter, bool counte
     if(counterUpdated)
     {
         if(needsCounter % 8 == 0)
-            playerPointer->changePlayerStats(drink);
+            playerPointer->changePlayerStats(drinking);
         if(needsCounter % 12 == 0)
-            playerPointer->changePlayerStats(eat);
+            playerPointer->changePlayerStats(eating);
     }
 
     std::cout << "Hunger: "<< playerPointer->getPlayerHunger();
@@ -366,10 +400,20 @@ void printInventory(Player *playerPointer){
     for(int i = 0; i <INV_SIZE; i++){
         std::cout << "|Slot " << i+1 <<": ";
 
-        if(playerPointer->getItemType(i) == 0)
+        if(playerPointer->getItemType(i) == empty)
             std::cout << " \t";
         else
-            std::cout << playerPointer->getItemType(i)<< "\t";
+            std::cout << playerPointer->inventoryItemToString(playerPointer->getItemType(i))<< "\t";
     }
     std::cout << "\n";
+}
+
+void printMapLegend(){
+    std::cout << "S - Ship area\n \
+                  P - Player\n \
+                  W - Wood\n \
+                  I - Iron\n \
+                  R - Rope\n \
+                  F - Food\n \
+                  D - Drink\n";
 }

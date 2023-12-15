@@ -12,6 +12,15 @@
     5 - drink
 */
 
+enum types{
+    empty,
+    wood,
+    iron,
+    rope,
+    food,
+    drink
+};
+
 class location{
     private:
         bool shipAccessibleArea;

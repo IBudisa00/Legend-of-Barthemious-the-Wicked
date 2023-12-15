@@ -7,8 +7,8 @@
 #define INV_SIZE 5
 
 enum consumation{
-    eat = 1,
-    drink
+    eating = 1,
+    drinking
 };
 
 struct Status {
@@ -41,7 +41,8 @@ class Player {
     private:
         char name[MAX_NAME];
         Status stats;
-        Item inventory[INV_SIZE]; 
+        Item inventory[INV_SIZE];
+        bool playerIsAlive;
     public:
         Player();
         void setName(char* desiredName);
@@ -57,6 +58,8 @@ class Player {
         uint32_t getPlayerHunger();
         uint32_t getPlayerThirst();
         bool isStorableItem(int slot);
+        bool checkIsPlayerAlive();
+        char *inventoryItemToString(int slot);
 };
 
 class Ship{

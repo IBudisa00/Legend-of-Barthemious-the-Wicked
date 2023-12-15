@@ -58,11 +58,11 @@ const char* Ship::typeToClass(int shipType){
 }
 
 void Ship::storeItem(int typeOfItem, int valueOfItem){
-    if(typeOfItem == 1)
+    if(typeOfItem == types::wood)
         wood+=valueOfItem;
-    else if(typeOfItem == 2)
+    else if(typeOfItem == types::iron)
         iron+=valueOfItem;
-    else if(typeOfItem == 3)
+    else if(typeOfItem == types::rope)
         rope+=valueOfItem;
 }
 
@@ -81,11 +81,12 @@ Player::Player(){
     strcpy(name,"Unnamed Entity");
     stats.food = MAX_FOOD_AND_THIRST_LEVEL;
     stats.thirst = MAX_FOOD_AND_THIRST_LEVEL;
+    playerIsAlive = true;
 
     for(int i = 0; i<INV_SIZE; i++)
     {
         inventory[i].value = 0;
-        inventory[i].type = 0;
+        inventory[i].type = empty;
     }
 }
 void Player::setName(char* desiredName){
@@ -93,7 +94,7 @@ void Player::setName(char* desiredName){
 }
 
 void Player::eat(int slot){
-    if(inventory[slot-1].type != 4)
+    if(inventory[slot-1].type != food)
         std::cout << "Item at slot "<< slot <<" isn't food!\n";
     else
     {
@@ -107,14 +108,14 @@ void Player::eat(int slot){
             inventory[i].type = inventory[i+1].type;
             inventory[i].value = inventory[i+1].value;
         }
-        inventory[INV_SIZE-1].type = 0;
+        inventory[INV_SIZE-1].type = empty;
         inventory[INV_SIZE-1].value = 0;
     }
 
 }
 
 void Player::drink(int slot){
-    if(inventory[slot-1].type != 5)
+    if(inventory[slot-1].type != types::drink)
         std::cout << "Item at slot "<< slot <<" isn't drink!\n";
     else
     {
@@ -128,7 +129,7 @@ void Player::drink(int slot){
             inventory[i].type = inventory[i+1].type;
             inventory[i].value = inventory[i+1].value;
         }
-        inventory[INV_SIZE-1].type = 0;
+        inventory[INV_SIZE-1].type = empty;
         inventory[INV_SIZE-1].value = 0;
     }
 
@@ -137,7 +138,7 @@ void Player::drink(int slot){
 void Player::pickup(location *pos){
     for(int i = 0; i < INV_SIZE; i++)
     {
-        if(inventory[i].type == 0)
+        if(inventory[i].type == empty)
         {
             setInventorySlot(pos->itemAtLocation(), pos->valueOfItemAtLocation(), i);
             pos->deleteElem();
@@ -160,7 +161,7 @@ bool Player::checkInvForItem(uint32_t slot){
 }
 
 void Player::removeItemFromInv(uint32_t slot){
-    setInventorySlot(0, 0, slot);
+    setInventorySlot(empty, 0, slot);
 }
 
 uint32_t Player::getItemType(int slot){
@@ -172,12 +173,18 @@ uint32_t Player::getItemValue(int slot){
 }
 
 void Player::changePlayerStats(uint32_t consumationType){
-    if(consumationType == consumation::eat)
+    if(consumationType == eating)
         stats.food--;
-    else if(consumationType == consumation::drink)
+    else if(consumationType == drinking)
         stats.thirst--;
     else
         std::cout << "Unknown consumationType...\n";
+
+    if(stats.food == 0 || stats.thirst == 0)
+    {
+        playerIsAlive = false;
+        std::cout << "You have collapsed and died. Curse has taken another soul.\n";
+    }
 }
 
 uint32_t Player::getPlayerHunger(){
@@ -188,10 +195,30 @@ uint32_t Player::getPlayerThirst(){
 }
 
 bool Player::isStorableItem(int slot){
-    if((inventory[slot].type != 4) && (inventory[slot].type != 5))
+    if((inventory[slot].type != food) && (inventory[slot].type != types::drink))
         return true;
     else
         return false;
+}
+
+bool Player::checkIsPlayerAlive(){
+    if(playerIsAlive)
+        return true;
+    else
+        return false;
+}
+
+char* Player::inventoryItemToString(int itemType){
+    if(itemType == wood)
+        return "wood";
+    else if(itemType == iron)
+        return "iron";
+    else if(itemType == rope)
+        return "rope";
+    else if(itemType == food)
+        return "food";
+    else
+        return "drink";
 }
 //----------- End Player functions ---------------//
 
@@ -205,7 +232,7 @@ void consumingItem(Player *playerInfo, uint32_t functionOfConsuming){
     }
     else
     {
-        if(functionOfConsuming == eat)
+        if(functionOfConsuming == eating)
             playerInfo->eat(itemSlot);
         else
             playerInfo->drink(itemSlot);

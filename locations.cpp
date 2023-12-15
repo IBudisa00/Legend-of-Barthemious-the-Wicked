@@ -5,7 +5,7 @@
 location::location(){
     shipAccessibleArea = false;
     playerIsHere = false;
-    elem = 0;
+    elem = empty;
     value = 0;
 }
 
@@ -19,12 +19,12 @@ void location::setShipAccessibleArea(){
 }
 
 void location::deleteElem(){
-    elem = 0;
+    elem = empty;
     value = 0;
 }
 
 bool location::checkExistence(){
-    if(elem != 0)
+    if(elem != empty)
         return true;
     else
     {
@@ -86,16 +86,16 @@ void areaCoordinatesSetting(location map[MAP1_X_CORD][MAP1_Y_CORD]){
 void setStartingMap(location startMap[MAP1_X_CORD][MAP1_Y_CORD]){
     //location map1[MAP1_X_CORD][MAP1_Y_CORD];
     startMap[0][4].setShipAccessibleArea();
-    startMap[1][1].setItemAtLocation(1,4);
-    startMap[1][6].setItemAtLocation(3,3);
-    startMap[3][3].setItemAtLocation(5,1);
-    startMap[3][6].setItemAtLocation(4,1);
-    startMap[4][5].setItemAtLocation(2,1);
-    startMap[5][0].setItemAtLocation(2,2);
-    startMap[5][5].setItemAtLocation(1,4);
-    startMap[6][3].setItemAtLocation(4,1);
-    startMap[6][8].setItemAtLocation(2,4);
-    startMap[7][7].setItemAtLocation(5,1);
-    startMap[8][1].setItemAtLocation(1,3);
-    startMap[8][4].setItemAtLocation(3,5);
+    startMap[1][1].setItemAtLocation(wood,4);
+    startMap[1][6].setItemAtLocation(rope,3);
+    startMap[3][3].setItemAtLocation(drink,1);
+    startMap[3][6].setItemAtLocation(food,1);
+    startMap[4][5].setItemAtLocation(iron,1);
+    startMap[5][0].setItemAtLocation(iron,2);
+    startMap[5][5].setItemAtLocation(wood,4);
+    startMap[6][3].setItemAtLocation(food,1);
+    startMap[6][8].setItemAtLocation(iron,4);
+    startMap[7][7].setItemAtLocation(drink,1);
+    startMap[8][1].setItemAtLocation(wood,3);
+    startMap[8][4].setItemAtLocation(rope,5);
 }
