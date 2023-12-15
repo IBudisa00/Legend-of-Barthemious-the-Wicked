@@ -183,7 +183,6 @@ void Player::changePlayerStats(uint32_t consumationType){
     if(stats.food == 0 || stats.thirst == 0)
     {
         playerIsAlive = false;
-        std::cout << "You have collapsed and died. Curse has taken another soul.\n";
     }
 }
 

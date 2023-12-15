@@ -17,6 +17,7 @@ bool checkRequirementsForSailing(Ship ship);
 void updatePlayerNeeds(Player *playerPointer, uint32_t needsCounter, bool counterUpdated);
 void printInventory(Player *playerPointer);
 void printMapLegend();
+void endGame(bool &stateOfGame);
 
 int main(){
     playGame();
@@ -39,7 +40,8 @@ void storyLine(){
 }
 
 void startCommands(){
-    std::cout << "/commands - List of commands\n \
+    std::cout << "\
+                  /commands - List of commands\n \
                   /start - Start game\n \
                   /exit - Exit game\n";
 };
@@ -84,6 +86,9 @@ void playGame(){
                 break;
             case 0:
                 std::cout << "Unknown command\n";
+                break;
+            default:
+                std::cout << "Start game before using in-game commands.\n";
                 break;
         }
     }
@@ -159,7 +164,7 @@ void startGame()
                         printMap(map1);
                     }
                     else
-                        gameOngoing = false;
+                        endGame(gameOngoing);
                 }
                 break;
             case 8:
@@ -181,7 +186,7 @@ void startGame()
                         printMap(map1);
                     }
                     else
-                        gameOngoing = false;
+                        endGame(gameOngoing);
                 }
                 break;
             case 9:
@@ -203,7 +208,7 @@ void startGame()
                         printMap(map1);
                     }
                     else
-                        gameOngoing = false;
+                        endGame(gameOngoing);
                 }
                 break;
             case 10:
@@ -225,7 +230,7 @@ void startGame()
                         printMap(map1);
                     }
                     else
-                        gameOngoing = false;
+                        endGame(gameOngoing);
                 }
                 break;
             case 11:
@@ -416,4 +421,9 @@ void printMapLegend(){
                   R - Rope\n \
                   F - Food\n \
                   D - Drink\n";
+}
+
+void endGame(bool &stateOfGame){
+    stateOfGame = false;
+    std::cout << "You have collapsed and died. Curse has taken another soul.\n";
 }
